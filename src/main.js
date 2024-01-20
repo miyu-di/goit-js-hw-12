@@ -10,7 +10,6 @@ const form = document.querySelector(".form");
 const input = document.querySelector(".inputsrc");
 const loader = document.querySelector(".loader");
 const gallery = document.querySelector(".gallery");
-
 const loadbtn = document.querySelector(".loadbtn");
 
 const lightbox = new SimpleLightbox('.gallery a', {
@@ -21,22 +20,28 @@ const lightbox = new SimpleLightbox('.gallery a', {
 let page = 1;
 let perPage = 40;
 let searchParams;
+let userInput;
 
 loadbtn.addEventListener("click", loadMoreBtn());
 
 async function loadMoreBtn() {
+  page +=1;
   await postGallery();
 }
 
-function postGallery() {
 form.addEventListener("submit", async event => {
   event.preventDefault();
-  let userInput = input.value
+  gallery.innerHTML = "";
+  page = 1;
+  userInput = input.value;
+  postGallery();
+})
 
+async function postGallery() {
   searchParams = {
     params: {
       key: '41766309-9b727aff341ca6e5a641aa2fb',
-      q: `${userInput}`,
+      q: userInput,
       orientation: 'horizontal',
       per_page: perPage,
       page: page,
@@ -48,7 +53,6 @@ form.addEventListener("submit", async event => {
   
   try {
     loader.classList.remove('hide');
-
     const response = await axios.get(
     'https://pixabay.com/api/',
     searchParams);
@@ -58,7 +62,6 @@ form.addEventListener("submit", async event => {
 
     setTimeout(() => {
       loader.classList.add('hide');
-      gallery.innerHTML = "";
       if (response.data.totalHits > 0) {
         const imglist = images.hits.reduce((html, hit) => {
           return (
@@ -104,9 +107,7 @@ form.addEventListener("submit", async event => {
         console.log(error);
     } finally {
     form.reset();
-
     }
-});
 }
 
 function updateButtonVisibility() {
