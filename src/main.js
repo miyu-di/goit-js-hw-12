@@ -22,12 +22,8 @@ let perPage = 40;
 let searchParams;
 let userInput;
 
-loadbtn.addEventListener("click", loadMoreBtn());
+loadbtn.addEventListener("click", loadMoreBtn);
 
-async function loadMoreBtn() {
-  page +=1;
-  await postGallery();
-}
 
 form.addEventListener("submit", async event => {
   event.preventDefault();
@@ -36,6 +32,12 @@ form.addEventListener("submit", async event => {
   userInput = input.value;
   postGallery();
 })
+
+async function loadMoreBtn() {
+  page +=1;
+  await postGallery();
+}
+
 
 async function postGallery() {
   searchParams = {
