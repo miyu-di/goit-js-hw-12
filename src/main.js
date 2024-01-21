@@ -31,7 +31,8 @@ form.addEventListener("submit", async event => {
   gallery.innerHTML = "";
   page = 1;
   userInput = input.value;
-  postGallery();
+  loadbtn.classList.add("hide");
+  await postGallery();
 })
 
 async function loadMoreBtn() {
@@ -39,6 +40,7 @@ async function loadMoreBtn() {
 
   const totalPages = Math.ceil(response.data.totalHits / perPage);
   if (page > totalPages) {
+    loadbtn.classList.add("hide");
     iziToast.show({
       message: `We're sorry, but you've reached the end of search results.`,
       position: 'topRight'
@@ -46,6 +48,7 @@ async function loadMoreBtn() {
     return;
   }
   await postGallery();
+  loadbtn.classList.remove("hide");
 }
 
 async function postGallery() {
@@ -69,8 +72,9 @@ async function postGallery() {
     searchParams);
     
     const images = response.data;
-    setTimeout(() => {
-      loader.classList.add('hide');
+
+    loader.classList.add('hide');
+
       if (response.data.totalHits > 0) {
         const imglist = images.hits.reduce((html, hit) => {
           return (
@@ -119,7 +123,7 @@ async function postGallery() {
         });
       }
       updateButtonVisibility();
-    }, 2000);
+
   }
     catch (error) {
         console.log(error);
