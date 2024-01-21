@@ -21,9 +21,10 @@ let page = 1;
 let perPage = 40;
 let searchParams;
 let userInput;
+let response;
+let cardHeight;
 
 loadbtn.addEventListener("click", loadMoreBtn);
-
 
 form.addEventListener("submit", async event => {
   event.preventDefault();
@@ -34,10 +35,18 @@ form.addEventListener("submit", async event => {
 })
 
 async function loadMoreBtn() {
-  page +=1;
+  page += 1;
+
+  const totalPages = Math.ceil(response.data.totalHits / perPage);
+  if (page > totalPages) {
+    iziToast.show({
+      message: `We're sorry, but you've reached the end of search results.`,
+      position: 'topRight'
+    });
+    return;
+  }
   await postGallery();
 }
-
 
 async function postGallery() {
   searchParams = {
@@ -55,13 +64,12 @@ async function postGallery() {
   
   try {
     loader.classList.remove('hide');
-    const response = await axios.get(
+    response = await axios.get(
     'https://pixabay.com/api/',
     searchParams);
     
     const images = response.data;
     console.log(searchParams.params.page);
-
     setTimeout(() => {
       loader.classList.add('hide');
       if (response.data.totalHits > 0) {
@@ -94,6 +102,15 @@ async function postGallery() {
           )
         }, '')
         gallery.insertAdjacentHTML('beforeend', imglist);
+
+        const imgCard = document.querySelector(".gallery-image");
+        cardHeight = imgCard.getBoundingClientRect().height;
+        
+        window.scrollBy({
+          top: 2 * cardHeight,
+          behavior: 'smooth'
+        });
+
         lightbox.refresh();
         
       } else {
