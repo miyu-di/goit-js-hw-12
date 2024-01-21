@@ -69,7 +69,6 @@ async function postGallery() {
     searchParams);
     
     const images = response.data;
-    console.log(searchParams.params.page);
     setTimeout(() => {
       loader.classList.add('hide');
       if (response.data.totalHits > 0) {
@@ -105,7 +104,7 @@ async function postGallery() {
 
         const imgCard = document.querySelector(".gallery-image");
         cardHeight = imgCard.getBoundingClientRect().height;
-        
+
         window.scrollBy({
           top: 2 * cardHeight,
           behavior: 'smooth'
