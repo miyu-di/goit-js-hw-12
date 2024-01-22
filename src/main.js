@@ -38,17 +38,18 @@ form.addEventListener("submit", async event => {
 async function loadMoreBtn() {
   page += 1;
 
-  const totalPages = Math.ceil(response.data.totalHits / perPage);
-  if (page > totalPages) {
-    loadbtn.classList.add("hide");
-    iziToast.show({
-      message: `We're sorry, but you've reached the end of search results.`,
-      position: 'topRight'
-    });
-    return;
-  }
   await postGallery();
   loadbtn.classList.remove("hide");
+
+  const totalPages = Math.ceil(response.data.totalHits / perPage);
+  if (page >= totalPages) {
+    iziToast.show({
+      message: `We're sorry, but you've reached the end of search results.`,
+      position: 'topRight',
+    });
+    loadbtn.classList.add("hide");
+    return;
+  }
 }
 
 async function postGallery() {
